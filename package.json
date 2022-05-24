@@ -1,0 +1,23 @@
+{
+  "name": "bean-fastify-example",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "exports": "./index.js",
+  "scripts": {
+    "start": "node --experimental-network-imports ./index.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [],
+  "author": "Alon Niv",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/static": "^5.0.2",
+    "@fastify/websocket": "^5.0.0",
+    "fastify": "^3.29.0",
+    "lowdb": "^3.0.0",
+    "uuid": "^8.3.2"
+  }
+}
