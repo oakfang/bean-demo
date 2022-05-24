@@ -50,7 +50,7 @@ export class TodosClient extends ApiClient {
   }
 
   async addTodo(todo) {
-    this.state.tx(
+    return this.state.tx(
       (current) => {
         current.todos.push(todo);
       },
@@ -60,12 +60,13 @@ export class TodosClient extends ApiClient {
           const t = current.todos.find((t) => t === todo);
           Object.assign(t, created);
         });
+        return created;
       }
     );
   }
 
   async updateTodo(todo) {
-    this.state.tx(
+    return this.state.tx(
       (current) => {
         const idx = current.todos.findIndex(({ id }) => todo.id === id);
         if (idx > -1) {
@@ -76,15 +77,15 @@ export class TodosClient extends ApiClient {
     );
   }
 
-  async deleteTodo(todo) {
-    this.state.tx(
+  async deleteTodo(todoId) {
+    return this.state.tx(
       (current) => {
-        const idx = current.todos.findIndex(({ id }) => todo.id === id);
+        const idx = current.todos.findIndex(({ id }) => todoId === id);
         if (idx > -1) {
           current.todos.splice(idx, 1);
         }
       },
-      () => this.delete(`/${todo.id}`)
+      () => this.delete(`/${todoId}`)
     );
   }
 }

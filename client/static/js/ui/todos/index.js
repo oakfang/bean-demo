@@ -46,7 +46,7 @@ export default (class TodosSection extends WebComponent {
 
   [on(DELETE_TODO)](event) {
     const { detail: todo } = event;
-    todosClient.deleteTodo(todo);
+    todosClient.deleteTodo(todo.id);
   }
 
   createTodoElement(todo) {
@@ -65,7 +65,6 @@ export default (class TodosSection extends WebComponent {
     for await (let { todos } of state.untilCancelled({
       signal: this.connectionSignal,
     })) {
-      console.log('message');
       this.syncChanges(todos);
     }
   }

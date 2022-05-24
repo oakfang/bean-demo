@@ -31,15 +31,18 @@ export async function rollback() {
 
 export const dbStateManager = {
   async update(updater) {
-    await updater(select);
+    const value = await updater(select());
     await commit();
+    return value;
   },
   async tx(updater, effect) {
     try {
       await this.update(updater);
-      await effect();
+      const value = await effect();
       await commit();
-    } catch {
+      return value;
+    } catch (err) {
+      console.error(err);
       await rollback();
     }
   },

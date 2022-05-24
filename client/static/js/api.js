@@ -84,11 +84,17 @@ export class ApiClient {
   }
 
   async post(url, body, options = {}) {
-    return this.#fetch("POST", url, { ...options, body: JSON.stringify(body) });
+    return this.#fetch("POST", url, {
+      ...options,
+      body: this.isRemote ? JSON.stringify(body) : body,
+    });
   }
 
   async put(url, body, options = {}) {
-    return this.#fetch("PUT", url, { ...options, body: JSON.stringify(body) });
+    return this.#fetch("PUT", url, {
+      ...options,
+      body: this.isRemote ? JSON.stringify(body) : body,
+    });
   }
 
   async patch(url, body, options = {}) {

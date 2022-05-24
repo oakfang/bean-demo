@@ -1,19 +1,20 @@
-import { createAudience } from "../wire.js";
-import {
-  getTodos,
-  addTodo,
-  updateTodo,
-  deleteTodo,
-  select,
-  dbStateManager,
-} from "../db.js";
-import { TodosClient } from "../public/static/js/services/todos.js";
+import { v4 as uuid } from "uuid";
+import { select, dbStateManager } from "../db.js";
+import { createAudience } from "../com/wire.js";
+import { TodosClient } from "../../client/static/js/services/todos.js";
 
-const todosClient = new TodosClient(({ method, url, body }) => {
+const todosClient = new TodosClient(({ method, body }) => {
   switch (method) {
     case "GET": {
       const { todos } = select();
       return todos;
+    }
+    case "POST": {
+      const todo = { ...body, id: uuid() };
+      return todo;
+    }
+    case "PUT": {
+      return body;
     }
   }
 });
@@ -29,19 +30,19 @@ export async function controller(fastify) {
   });
 
   fastify.post("/", async (request, reply) => {
-    const todo = await addTodo(request.body);
+    const todo = await todosClient.addTodo(request.body);
     publish(request, "add", todo);
     reply.status(201).send(todo);
   });
 
   fastify.put("/:id", async (request, reply) => {
-    const todo = await updateTodo(request.params.id, request.body);
+    const todo = await todosClient.updateTodo(request.body);
     reply.send(todo);
     publish(request, "update", todo);
   });
 
   fastify.delete("/:id", async (request, reply) => {
-    await deleteTodo(request.params.id);
+    await todosClient.deleteTodo(request.params.id);
     reply.send(null);
     publish(request, "delete", request.params.id);
   });
